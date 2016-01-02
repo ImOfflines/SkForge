@@ -15,7 +15,7 @@ import ch.njol.util.coll.CollectionUtils;
 
 public class ExprRegenOfPlayer extends SimpleExpression<Number>{
 	private Expression<Player> player;
-	//The name of the player is a string
+	
 	@Override
 	public Class<? extends Number> getReturnType() {
 		return Number.class;
@@ -25,9 +25,6 @@ public class ExprRegenOfPlayer extends SimpleExpression<Number>{
 	public boolean isSingle() {
 		return true;
 	}
-	//In here we can assign our player variable from the expression's values given in the syntax
-	//So for example if our syntax is: name of %player% standing at %location% hitting %player%
-	//Then to get the first player we use expr[0] and to get the location we use expr[1] and the second player would be expr[2]
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean init(Expression<?>[] expr, int matchedPattern, Kleenean arg2,
@@ -43,11 +40,8 @@ public class ExprRegenOfPlayer extends SimpleExpression<Number>{
         
         @Override
 	public void change(Event e, Object[] delta, Changer.ChangeMode mode){
-		//Checking if the change mode is set (So set player's amazing display name for example)
 		if (mode == ChangeMode.SET)
 			player.getSingle(e).setDisplayName((String)delta[0]);
-		//Checking if the change mode is add (So add "hi" to player's amazing display name) so if his name was
-                //Headshot it would be Headshothi
 		if (mode == ChangeMode.ADD)
 			player.getSingle(e).setDisplayName(player.getSingle(e).getDisplayName() + (String)delta[0]);
 	}
