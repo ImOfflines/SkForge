@@ -1,0 +1,61 @@
+package com.offline.forge;
+
+import javax.annotation.Nullable;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+
+import ch.njol.skript.classes.Changer;
+import ch.njol.skript.classes.Changer.ChangeMode;
+import ch.njol.skript.lang.Expression;
+import ch.njol.skript.lang.SkriptParser.ParseResult;
+import ch.njol.skript.lang.util.SimpleExpression;
+import ch.njol.util.Kleenean;
+import ch.njol.util.coll.CollectionUtils;
+
+public class ExprRegenOfPlayer extends SimpleExpression<Number>{
+	private Expression<Player> player;
+	//The name of the player is a string
+	@Override
+	public Class<? extends Number> getReturnType() {
+		return Number.class;
+	}
+	//We will only return the name of player so it is one value
+	@Override
+	public boolean isSingle() {
+		return true;
+	}
+	//In here we can assign our player variable from the expression's values given in the syntax
+	//So for example if our syntax is: name of %player% standing at %location% hitting %player%
+	//Then to get the first player we use expr[0] and to get the location we use expr[1] and the second player would be expr[2]
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean init(Expression<?>[] expr, int matchedPattern, Kleenean arg2,
+			ParseResult arg3) {
+		player = (Expression<Player>) expr[0];
+		return true;
+	}
+	@Override
+	public String toString(@Nullable Event e, boolean arg1) {
+		return "regeneration of player";
+	}
+        
+        
+        @Override
+	public void change(Event e, Object[] delta, Changer.ChangeMode mode){
+		//Checking if the change mode is set (So set player's amazing display name for example)
+		if (mode == ChangeMode.SET)
+			player.getSingle(e).setDisplayName((String)delta[0]);
+		//Checking if the change mode is add (So add "hi" to player's amazing display name) so if his name was
+                //Headshot it would be Headshothi
+		if (mode == ChangeMode.ADD)
+			player.getSingle(e).setDisplayName(player.getSingle(e).getDisplayName() + (String)delta[0]);
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public Class<?>[] acceptChange(final Changer.ChangeMode mode) {
+		if (mode == ChangeMode.SET || mode == ChangeMode.ADD)
+			return CollectionUtils.array(String.class);
+		return null;
+	}
+}
